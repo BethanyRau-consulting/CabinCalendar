@@ -5,32 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabin Calendar</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc, Timestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    <!-- Firebase Initialization -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        window.firebaseConfig = {
+            apiKey: "AIzaSyDC80jrgv7iC7pcgCnUsY3GqL1Nh0y9fEY",
+            authDomain: "cabin-calendar-3c52f.firebaseapp.com",
+            projectId: "cabin-calendar-3c52f",
+            storageBucket: "cabin-calendar-3c52f.firebasestorage.app",
+            messagingSenderId: "9860592954",
+            appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
+        };
 
-    window.firebaseConfig = {
-        apiKey: "AIzaSyDC80jrgv7iC7pcgCnUsY3GqL1Nh0y9fEY",
-        authDomain: "cabin-calendar-3c52f.firebaseapp.com",
-        projectId: "cabin-calendar-3c52f",
-        storageBucket: "cabin-calendar-3c52f.firebasestorage.app",
-        messagingSenderId: "9860592954",
-        appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
-    };
+        const app = initializeApp(window.firebaseConfig);
+        window.db = getFirestore(app);
+        window.Timestamp = Timestamp;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.addDoc = addDoc;
+        window.query = query;
+        window.orderBy = orderBy;
 
-    const app = initializeApp(window.firebaseConfig);
-    window.db = getFirestore(app);
-    window.Timestamp = Timestamp;
-    window.collection = collection;
-    window.getDocs = getDocs;
-    window.addDoc = addDoc;
-
-    console.log("Firebase initialized in index.html");
-</script>
-
-    <!-- Load app.js AFTER Firebase -->
+        console.log("Firebase initialized in index.html");
+    </script>
     <script defer src="app.js"></script>
 </head>
 <body>
