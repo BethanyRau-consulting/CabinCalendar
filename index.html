@@ -5,9 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabin Calendar</title>
     <link rel="stylesheet" href="styles.css">
-    <script type="module" defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script type="module" defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script type="module" defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    window.firebaseConfig = {
+        apiKey: "AIzaSyDC80jrgv7iC7pcgCnUsY3GqL1Nh0y9fEY",
+        authDomain: "cabin-calendar-3c52f.firebaseapp.com",
+        projectId: "cabin-calendar-3c52f",
+        storageBucket: "cabin-calendar-3c52f.firebasestorage.app",
+        messagingSenderId: "9860592954",
+        appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
+    };
+
+    window.firebaseApp = initializeApp(window.firebaseConfig);
+    window.db = getFirestore(window.firebaseApp);
+</script>
     <script defer src="app.js"></script>
 </head>
 <body>
