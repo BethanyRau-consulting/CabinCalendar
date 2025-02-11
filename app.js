@@ -46,29 +46,34 @@ function generateCalendar() {
         calendar.appendChild(emptyCell);
     }
 
+    // First, generate calendar days and keep a reference to them
+    let dayCells = {};
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
         dayCell.classList.add('calendar-day');
         dayCell.innerText = day;
-        dayCell.onclick = () => addEvent(day, dayCell);
+        dayCell.onclick = () => openEventForm(day, dayCell);
         calendar.appendChild(dayCell);
-
-        // Retrieve events from Firestore
-        const eventDate = new Date(currentYear, currentMonth, day);
-        db.collection("events")
-            .where("timestamp", ">=", firebase.firestore.Timestamp.fromDate(eventDate))
-            .where("timestamp", "<", firebase.firestore.Timestamp.fromDate(new Date(currentYear, currentMonth, day + 1)))
-            .get()
-            .then((querySnapshot) => {
-                querySnapshot.forEach((doc) => {
-                    const eventData = doc.data();
-                    displayEvent(day, eventData.name, "", eventData.color, eventData.description, dayCell);
-                });
-            })
-            .catch((error) => {
-                console.error("Error fetching events:", error);
-            });
+        dayCells[day] = dayCell;
     }
+
+    // Then, retrieve events and update the calendar accordingly
+    db.collection("events")
+        .where("timestamp", ">=", firebase.firestore.Timestamp.fromDate(new Date(currentYear, currentMonth, 1)))
+        .where("timestamp", "<", firebase.firestore.Timestamp.fromDate(new Date(currentYear, currentMonth + 1, 1)))
+        .get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                const eventData = doc.data();
+                const eventDay = new Date(eventData.timestamp.toDate()).getDate();
+                if (dayCells[eventDay]) {
+                    displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
+                }
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching events:", error);
+        });
 }
 
 function displayEvent(day, name, time, color, description, dayCell) {
