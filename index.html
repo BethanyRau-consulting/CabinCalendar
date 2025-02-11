@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabin Calendar</title>
     <link rel="stylesheet" href="styles.css">
+<!-- Load Firebase before app.js -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
@@ -18,9 +19,16 @@
         appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
     };
 
+    // Initialize Firebase
     window.firebaseApp = initializeApp(window.firebaseConfig);
     window.db = getFirestore(window.firebaseApp);
+
+    console.log("Firebase initialized in index.html");
 </script>
+
+<!-- Load app.js AFTER Firebase has been initialized -->
+<script defer src="app.js"></script>
+
     <script defer src="app.js"></script>
 </head>
 <body>
