@@ -63,7 +63,7 @@ function generateCalendar() {
         const eventList = document.getElementById('event-list');
         eventList.innerHTML = "<h2>Events</h2>"; // Clear event list
 
-        let eventsArray = []; // Store events in an array
+        let eventsArray = [];
 
         querySnapshot.forEach((doc) => {
             const eventData = doc.data();
@@ -71,6 +71,8 @@ function generateCalendar() {
                 console.error("Event missing timestamp:", eventData);
                 return;
             }
+
+            eventData.id = doc.id; // Store event ID
             eventsArray.push(eventData);
         });
 
@@ -81,13 +83,14 @@ function generateCalendar() {
         eventsArray.forEach(eventData => {
             const eventDay = new Date(eventData.timestamp.toDate()).getDate();
             if (dayCells[eventDay]) {
-                displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
+                displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay], eventData.id);
             }
         });
     }, (error) => {
         console.error("Error fetching events:", error);
     });
 }
+
 
 function prevMonth() {
     currentMonth--;
@@ -152,4 +155,36 @@ function displayEvent(day, name, time, color, description, dayCell, eventId) {
 
     // Apply color to calendar day
     dayCell.style.backgroundColor = color;
+}
+
+function editEvent(eventId) {
+    const newName = prompt("Enter new event name:");
+    const newTime = prompt("Enter new event time (HH:MM AM/PM):");
+    const newDescription = prompt("Enter new event description:");
+    const newColor = prompt("Enter new event color (green, yellow, red, orange, blue, purple):");
+
+    if (newName && newTime && newColor) {
+        window.updateDoc(window.doc(db, "events", eventId), {
+            name: newName,
+            time: newTime,
+            description: newDescription,
+            color: newColor
+        }).then(() => {
+            console.log("Event updated successfully!");
+        }).catch((error) => {
+            console.error("Error updating event: ", error);
+        });
+    }
+}
+
+function deleteEvent(eventId) {
+    if (confirm("Are you sure you want to delete this event?")) {
+        window.deleteDoc(window.doc(db, "events", eventId))
+            .then(() => {
+                console.log("Event deleted successfully!");
+            })
+            .catch((error) => {
+                console.error("Error deleting event: ", error);
+            });
+    }
 }
