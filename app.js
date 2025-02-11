@@ -1,3 +1,7 @@
+// Global variables for calendar
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+
 // Ensure Firebase is loaded before running the script
 if (window.firebaseApp && window.db) {
     console.log("Firebase loaded successfully in app.js");
@@ -11,10 +15,6 @@ if (window.firebaseApp && window.db) {
 } else {
     console.error("Firebase is not initialized. Check script order in index.html");
 }
-
-// Global variables for calendar
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
 
 function checkPassword() {
     const password = document.getElementById('password-input').value;
