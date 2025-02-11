@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cabin Calendar</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="app.js"></script>
+    <script type="module" defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script type="module" defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script type="module" defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <div id="login-page">
+        <h1>Login</h1>
+        <input type="password" id="password-input" placeholder="Enter Password">
+        <button onclick="checkPassword()">Login</button>
+    </div>
+    
+    <div id="main-content" style="display: none;">
+        <h1>Cabin Calendar</h1>
+        <div id="calendar"></div>
+        <div id="event-list"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+    
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('password-input').value;
+            if (password === 'password') {
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            } else {
+                alert('Incorrect password');
+            }
+        }
+        function logout() {
+            document.getElementById('login-page').style.display = 'block';
+            document.getElementById('main-content').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
