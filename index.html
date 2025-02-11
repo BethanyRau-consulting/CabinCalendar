@@ -67,6 +67,10 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            color: black;
+        }
+        #event-list h2 {
+            text-align: center;
         }
         button {
             background: #007BFF;
@@ -98,7 +102,9 @@
             </div>
             <div id="calendar"></div>
         </div>
-        <div id="event-list"></div>
+        <div id="event-list">
+            <h2>Events</h2>
+        </div>
         <button onclick="logout()">Logout</button>
     </div>
     
@@ -122,7 +128,7 @@
         
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
-
+        
         function generateCalendar() {
             const calendar = document.getElementById('calendar');
             calendar.innerHTML = '';
@@ -141,12 +147,12 @@
                 const dayCell = document.createElement('div');
                 dayCell.classList.add('calendar-day');
                 dayCell.innerText = day;
-                dayCell.onclick = () => addEvent(day);
+                dayCell.onclick = () => addEvent(day, dayCell);
                 calendar.appendChild(dayCell);
             }
         }
 
-        function addEvent(day) {
+        function addEvent(day, dayCell) {
             const eventName = prompt("Enter event name:");
             const eventTime = prompt("Enter event time:");
             const eventColor = prompt("Enter event color (green, yellow, red, orange, blue, purple):");
@@ -154,8 +160,9 @@
                 const eventList = document.getElementById('event-list');
                 const eventItem = document.createElement('div');
                 eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()} - ${eventTime}: ${eventName}`;
-                eventItem.style.color = eventColor;
+                eventItem.style.color = "black";
                 eventList.appendChild(eventItem);
+                dayCell.style.backgroundColor = eventColor;
             }
         }
     </script>
