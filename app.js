@@ -128,3 +128,7 @@ function addEvent(day, dayCell) {
         });
     }
 }
+
+db.collection("events").get()
+    .then(() => console.log("Firestore is connected!"))
+    .catch(error => console.error("Firestore connection error:", error));
