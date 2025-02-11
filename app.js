@@ -29,6 +29,21 @@ function logout() {
     document.getElementById('password-input').value = '';
 }
 
+// Ensure Firebase is loaded
+if (window.firebaseApp && window.db) {
+    console.log("Firebase loaded successfully in app.js");
+
+    const db = window.db;
+
+    // Check Firestore connection
+    db.collection("events").get()
+        .then(() => console.log("Firestore is connected!"))
+        .catch(error => console.error("Firestore connection error:", error));
+
+} else {
+    console.error("Firebase is not initialized. Check script order in index.html");
+}
+
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
