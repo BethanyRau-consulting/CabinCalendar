@@ -138,15 +138,13 @@ function addEvent(day, dayCell) {
 
 // ✅ Update `displayEvent()` to Show Events in Calendar and Event List
 function displayEvent(day, name, time, color, description, dayCell, eventId) {
-    const eventList = document.getElementById('event-list');
+    const eventList = document.getElementById('events-ul');
 
-    // Create event entry in the list
-    const eventItem = document.createElement('div');
+    // Create event list item
+    const eventItem = document.createElement('li');
     eventItem.innerHTML = `
-        <p>
-            <strong>${new Date(currentYear, currentMonth, day).toLocaleDateString()}</strong> - 
-            ${time}: ${name} - ${description}
-        </p>
+        <strong>${new Date(currentYear, currentMonth, day).toLocaleDateString()}</strong> - 
+        ${time}: ${name} - ${description} 
         <button onclick="editEvent('${eventId}')">Edit</button>
         <button onclick="deleteEvent('${eventId}')">Delete</button>
     `;
@@ -156,6 +154,7 @@ function displayEvent(day, name, time, color, description, dayCell, eventId) {
     // Apply color to calendar day
     dayCell.style.backgroundColor = color;
 }
+
 
 function editEvent(eventId) {
     const newName = prompt("Enter new event name:");
