@@ -57,14 +57,13 @@ function generateCalendar() {
         dayCells[day] = dayCell;
     }
 
-    // ✅ Clear the event list to prevent duplicates
-    const eventList = document.getElementById('event-list');
-    eventList.innerHTML = "<h2>Events</h2>";
-
-    // ✅ Use Firestore `onSnapshot` for real-time updates
+    // ✅ Listen for real-time updates and sort events immediately
     const eventsQuery = window.query(window.collection(db, "events"), window.orderBy("timestamp", "asc"));
     window.onSnapshot(eventsQuery, (querySnapshot) => {
-        eventList.innerHTML = "<h2>Events</h2>"; // Clear and re-populate
+        const eventList = document.getElementById('event-list');
+        eventList.innerHTML = "<h2>Events</h2>"; // Clear event list
+
+        let eventsArray = []; // Store events in an array
 
         querySnapshot.forEach((doc) => {
             const eventData = doc.data();
@@ -72,7 +71,14 @@ function generateCalendar() {
                 console.error("Event missing timestamp:", eventData);
                 return;
             }
+            eventsArray.push(eventData);
+        });
 
+        // ✅ Sort events by timestamp before displaying
+        eventsArray.sort((a, b) => a.timestamp.toDate() - b.timestamp.toDate());
+
+        // ✅ Display sorted events
+        eventsArray.forEach(eventData => {
             const eventDay = new Date(eventData.timestamp.toDate()).getDate();
             if (dayCells[eventDay]) {
                 displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
