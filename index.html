@@ -146,30 +146,15 @@
             }
         }
 
-        function prevMonth() {
-            currentMonth--;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            }
-            generateCalendar();
-        }
-
-        function nextMonth() {
-            currentMonth++;
-            if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
-            }
-            generateCalendar();
-        }
-
         function addEvent(day) {
             const eventName = prompt("Enter event name:");
-            if (eventName) {
+            const eventTime = prompt("Enter event time:");
+            const eventColor = prompt("Enter event color (green, yellow, red, orange, blue, purple):");
+            if (eventName && eventTime && eventColor) {
                 const eventList = document.getElementById('event-list');
                 const eventItem = document.createElement('div');
-                eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()}: ${eventName}`;
+                eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()} - ${eventTime}: ${eventName}`;
+                eventItem.style.color = eventColor;
                 eventList.appendChild(eventItem);
             }
         }
