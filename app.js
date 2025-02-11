@@ -41,6 +41,24 @@ function generateCalendar() {
     }
 }
 
+function prevMonth() {
+    currentMonth--;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    }
+    generateCalendar();
+}
+
+function nextMonth() {
+    currentMonth++;
+    if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    generateCalendar();
+}
+
 function addEvent(day, dayCell) {
     const eventName = prompt("Enter event name:");
     const eventTime = prompt("Enter event time:");
