@@ -57,31 +57,32 @@ function generateCalendar() {
         dayCells[day] = dayCell;
     }
 
-    // ✅ Clear event list to avoid duplication
+    // ✅ Clear the event list to prevent duplicates
     const eventList = document.getElementById('event-list');
     eventList.innerHTML = "<h2>Events</h2>";
 
-    // ✅ Fetch events sorted by timestamp
+    // ✅ Use Firestore `onSnapshot` for real-time updates
     const eventsQuery = window.query(window.collection(db, "events"), window.orderBy("timestamp", "asc"));
-    window.getDocs(eventsQuery)
-        .then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                const eventData = doc.data();
-                if (!eventData.timestamp) {
-                    console.error("Event missing timestamp:", eventData);
-                    return;
-                }
+    window.onSnapshot(eventsQuery, (querySnapshot) => {
+        eventList.innerHTML = "<h2>Events</h2>"; // Clear and re-populate
 
-                const eventDay = new Date(eventData.timestamp.toDate()).getDate();
-                if (dayCells[eventDay]) {
-                    displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
-                }
-            });
-        })
-        .catch((error) => {
-            console.error("Error fetching events:", error);
+        querySnapshot.forEach((doc) => {
+            const eventData = doc.data();
+            if (!eventData.timestamp) {
+                console.error("Event missing timestamp:", eventData);
+                return;
+            }
+
+            const eventDay = new Date(eventData.timestamp.toDate()).getDate();
+            if (dayCells[eventDay]) {
+                displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
+            }
         });
+    }, (error) => {
+        console.error("Error fetching events:", error);
+    });
 }
+
 function prevMonth() {
     currentMonth--;
     if (currentMonth < 0) {
