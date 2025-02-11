@@ -52,7 +52,34 @@ function generateCalendar() {
         dayCell.innerText = day;
         dayCell.onclick = () => addEvent(day, dayCell);
         calendar.appendChild(dayCell);
+
+        // Retrieve events from Firestore
+        const eventDate = new Date(currentYear, currentMonth, day);
+        db.collection("events")
+            .where("timestamp", ">=", firebase.firestore.Timestamp.fromDate(eventDate))
+            .where("timestamp", "<", firebase.firestore.Timestamp.fromDate(new Date(currentYear, currentMonth, day + 1)))
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    const eventData = doc.data();
+                    displayEvent(day, eventData.name, "", eventData.color, eventData.description, dayCell);
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching events:", error);
+            });
     }
+}
+
+function displayEvent(day, name, time, color, description, dayCell) {
+    const eventList = document.getElementById('event-list');
+    const eventItem = document.createElement('div');
+    eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()} - ${time}: ${name} - ${description}`;
+    eventItem.style.color = "black";
+    eventList.appendChild(eventItem);
+
+    // Set color on calendar day
+    dayCell.style.backgroundColor = color;
 }
 
 function prevMonth() {
@@ -75,14 +102,24 @@ function nextMonth() {
 
 function addEvent(day, dayCell) {
     const eventName = prompt("Enter event name:");
-    const eventTime = prompt("Enter event time:");
+    const eventTime = prompt("Enter event time (HH:MM AM/PM):");
+    const eventDescription = prompt("Enter event description:");
     const eventColor = prompt("Enter event color (green, yellow, red, orange, blue, purple):");
+
     if (eventName && eventTime && eventColor) {
-        const eventList = document.getElementById('event-list');
-        const eventItem = document.createElement('div');
-        eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()} - ${eventTime}: ${eventName}`;
-        eventItem.style.color = "black";
-        eventList.appendChild(eventItem);
-        dayCell.style.backgroundColor = eventColor;
+        const eventDate = new Date(currentYear, currentMonth, day).getTime();
+
+        // Save to Firestore
+        db.collection("events").add({
+            name: eventName,
+            description: eventDescription,
+            color: eventColor,
+            timestamp: firebase.firestore.Timestamp.fromDate(new Date(eventDate))
+        }).then(() => {
+            console.log("Event added successfully!");
+            displayEvent(day, eventName, eventTime, eventColor, eventDescription, dayCell);
+        }).catch((error) => {
+            console.error("Error adding event: ", error);
+        });
     }
 }
