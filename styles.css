@@ -43,31 +43,3 @@ body {
 .calendar-day:hover {
     background: #d1d1d1;
 }
-.empty {
-    background: transparent;
-}
-#event-list {
-    margin-top: 20px;
-    background: white;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    color: black;
-}
-#event-list h2 {
-    text-align: center;
-}
-button {
-    background: #007BFF;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-}
-button:hover {
-    background: #0056b3;
-}
