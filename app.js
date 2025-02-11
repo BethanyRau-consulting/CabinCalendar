@@ -1,16 +1,17 @@
-// Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyDC80jrgv7iC7pcgCnUsY3GqL1Nh0y9fEY",
-    authDomain: "cabin-calendar-3c52f.firebaseapp.com",
-    projectId: "cabin-calendar-3c52f",
-    storageBucket: "cabin-calendar-3c52f.firebasestorage.app",
-    messagingSenderId: "9860592954",
-    appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
-};
+// Ensure Firebase is loaded
+if (window.firebaseApp && window.db) {
+    console.log("Firebase loaded successfully in app.js");
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+    const db = window.db;
+
+    // Check Firestore Connection
+    db.collection("events").get()
+        .then(() => console.log("Firestore is connected!"))
+        .catch(error => console.error("Firestore connection error:", error));
+
+} else {
+    console.error("Firebase is not initialized. Check script order in index.html");
+}
 
 function checkPassword() {
     const password = document.getElementById('password-input').value;
