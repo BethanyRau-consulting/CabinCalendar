@@ -1,4 +1,4 @@
-// Ensure Firebase is loaded
+// Ensure Firebase is loaded before running the script
 if (window.firebaseApp && window.db) {
     console.log("Firebase loaded successfully in app.js");
 
@@ -8,10 +8,13 @@ if (window.firebaseApp && window.db) {
     db.collection("events").get()
         .then(() => console.log("Firestore is connected!"))
         .catch(error => console.error("Firestore connection error:", error));
-
 } else {
     console.error("Firebase is not initialized. Check script order in index.html");
 }
+
+// Global variables for calendar
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
 function checkPassword() {
     const password = document.getElementById('password-input').value;
@@ -27,26 +30,8 @@ function checkPassword() {
 function logout() {
     document.getElementById('login-page').style.display = 'block';
     document.getElementById('main-content').style.display = 'none';
-    document.getElementById('password-input').value = '';
+    document.getElementById('password-input').value = ''; // Clear password input
 }
-
-// Ensure Firebase is loaded
-if (window.firebaseApp && window.db) {
-    console.log("Firebase loaded successfully in app.js");
-
-    const db = window.db;
-
-    // Check Firestore connection
-    db.collection("events").get()
-        .then(() => console.log("Firestore is connected!"))
-        .catch(error => console.error("Firestore connection error:", error));
-
-} else {
-    console.error("Firebase is not initialized. Check script order in index.html");
-}
-
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
 
 function generateCalendar() {
     const calendar = document.getElementById('calendar');
@@ -56,51 +41,39 @@ function generateCalendar() {
     const firstDay = new Date(currentYear, currentMonth, 1).getDay();
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
+    let dayCells = {};
     for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.classList.add('calendar-day', 'empty');
         calendar.appendChild(emptyCell);
     }
 
-    // First, generate calendar days and keep a reference to them
-    let dayCells = {};
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
         dayCell.classList.add('calendar-day');
         dayCell.innerText = day;
-        dayCell.onclick = () => openEventForm(day, dayCell);
+        dayCell.onclick = () => addEvent(day, dayCell);
         calendar.appendChild(dayCell);
         dayCells[day] = dayCell;
     }
 
-    // Then, retrieve events and update the calendar accordingly
+    // Retrieve events from Firestore
     db.collection("events")
-        .where("timestamp", ">=", firebase.firestore.Timestamp.fromDate(new Date(currentYear, currentMonth, 1)))
-        .where("timestamp", "<", firebase.firestore.Timestamp.fromDate(new Date(currentYear, currentMonth + 1, 1)))
+        .where("timestamp", ">=", window.Timestamp.fromDate(new Date(currentYear, currentMonth, 1)))
+        .where("timestamp", "<", window.Timestamp.fromDate(new Date(currentYear, currentMonth + 1, 1)))
         .get()
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 const eventData = doc.data();
                 const eventDay = new Date(eventData.timestamp.toDate()).getDate();
                 if (dayCells[eventDay]) {
-                    displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
+                    displayEvent(eventDay, eventData.name, eventData.color, dayCells[eventDay]);
                 }
             });
         })
         .catch((error) => {
             console.error("Error fetching events:", error);
         });
-}
-
-function displayEvent(day, name, time, color, description, dayCell) {
-    const eventList = document.getElementById('event-list');
-    const eventItem = document.createElement('div');
-    eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()} - ${time}: ${name} - ${description}`;
-    eventItem.style.color = "black";
-    eventList.appendChild(eventItem);
-
-    // Set color on calendar day
-    dayCell.style.backgroundColor = color;
 }
 
 function prevMonth() {
@@ -123,28 +96,24 @@ function nextMonth() {
 
 function addEvent(day, dayCell) {
     const eventName = prompt("Enter event name:");
-    const eventTime = prompt("Enter event time (HH:MM AM/PM):");
-    const eventDescription = prompt("Enter event description:");
     const eventColor = prompt("Enter event color (green, yellow, red, orange, blue, purple):");
 
-    if (eventName && eventTime && eventColor) {
+    if (eventName && eventColor) {
         const eventDate = new Date(currentYear, currentMonth, day).getTime();
 
-        // Save to Firestore
         db.collection("events").add({
             name: eventName,
-            description: eventDescription,
             color: eventColor,
-            timestamp: firebase.firestore.Timestamp.fromDate(new Date(eventDate))
+            timestamp: window.Timestamp.fromDate(new Date(eventDate))
         }).then(() => {
             console.log("Event added successfully!");
-            displayEvent(day, eventName, eventTime, eventColor, eventDescription, dayCell);
+            displayEvent(day, eventName, eventColor, dayCell);
         }).catch((error) => {
             console.error("Error adding event: ", error);
         });
     }
 }
 
-db.collection("events").get()
-    .then(() => console.log("Firestore is connected!"))
-    .catch(error => console.error("Firestore connection error:", error));
+function displayEvent(day, name, color, dayCell) {
+    dayCell.style.backgroundColor = color;
+}
