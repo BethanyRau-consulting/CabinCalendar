@@ -57,12 +57,24 @@ function generateCalendar() {
         dayCells[day] = dayCell;
     }
 
-    // Retrieve events from Firestore
+    // ✅ Clear the event list before adding new ones
+    const eventList = document.getElementById('event-list');
+    eventList.innerHTML = "<h2>Events</h2>";
+
+    // ✅ Retrieve events from Firestore with error handling
     window.getDocs(window.collection(db, "events"))
         .then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
                 const eventData = doc.data();
+                
+                // ✅ Check if timestamp exists
+                if (!eventData.timestamp) {
+                    console.error("Event missing timestamp:", eventData);
+                    return;
+                }
+
                 const eventDay = new Date(eventData.timestamp.toDate()).getDate();
+                
                 if (dayCells[eventDay]) {
                     displayEvent(eventDay, eventData.name, eventData.time, eventData.color, eventData.description, dayCells[eventDay]);
                 }
