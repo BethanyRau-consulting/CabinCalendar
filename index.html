@@ -5,30 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabin Calendar</title>
     <link rel="stylesheet" href="styles.css">
-<!-- Load Firebase before app.js -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    window.firebaseConfig = {
-        apiKey: "AIzaSyDC80jrgv7iC7pcgCnUsY3GqL1Nh0y9fEY",
-        authDomain: "cabin-calendar-3c52f.firebaseapp.com",
-        projectId: "cabin-calendar-3c52f",
-        storageBucket: "cabin-calendar-3c52f.firebasestorage.app",
-        messagingSenderId: "9860592954",
-        appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
-    };
+    <!-- Firebase Initialization -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, Timestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-    // Initialize Firebase
-    window.firebaseApp = initializeApp(window.firebaseConfig);
-    window.db = getFirestore(window.firebaseApp);
+        window.firebaseConfig = {
+            apiKey: "AIzaSyDC80jrgv7iC7pcgCnUsY3GqL1Nh0y9fEY",
+            authDomain: "cabin-calendar-3c52f.firebaseapp.com",
+            projectId: "cabin-calendar-3c52f",
+            storageBucket: "cabin-calendar-3c52f.firebasestorage.app",
+            messagingSenderId: "9860592954",
+            appId: "1:9860592954:web:d90fbaaa47e4b4061b4c03"
+        };
 
-    console.log("Firebase initialized in index.html");
-</script>
+        // Initialize Firebase
+        window.firebaseApp = initializeApp(window.firebaseConfig);
+        window.db = getFirestore(window.firebaseApp);
+        window.Timestamp = Timestamp;
 
-<!-- Load app.js AFTER Firebase has been initialized -->
-<script defer src="app.js"></script>
+        console.log("Firebase initialized in index.html");
+    </script>
 
+    <!-- Load app.js AFTER Firebase -->
     <script defer src="app.js"></script>
 </head>
 <body>
