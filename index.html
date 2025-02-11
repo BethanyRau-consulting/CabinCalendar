@@ -19,7 +19,14 @@
     
     <div id="main-content" style="display: none;">
         <h1>Cabin Calendar</h1>
-        <div id="calendar"></div>
+        <div id="calendar-container">
+            <div id="calendar-header">
+                <button onclick="prevMonth()">&#9665;</button>
+                <h2 id="monthYear"></h2>
+                <button onclick="nextMonth()">&#9655;</button>
+            </div>
+            <div id="calendar"></div>
+        </div>
         <div id="event-list"></div>
         <button onclick="logout()">Logout</button>
     </div>
@@ -30,13 +37,70 @@
             if (password === 'password') {
                 document.getElementById('login-page').style.display = 'none';
                 document.getElementById('main-content').style.display = 'block';
+                generateCalendar();
             } else {
                 alert('Incorrect password');
             }
         }
+        
         function logout() {
             document.getElementById('login-page').style.display = 'block';
             document.getElementById('main-content').style.display = 'none';
+            document.getElementById('password-input').value = ''; // Clear password input
+        }
+        
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        function generateCalendar() {
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            document.getElementById('monthYear').innerText = new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long', year: 'numeric' });
+            
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            for (let i = 0; i < firstDay; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.classList.add('calendar-day', 'empty');
+                calendar.appendChild(emptyCell);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.classList.add('calendar-day');
+                dayCell.innerText = day;
+                dayCell.onclick = () => addEvent(day);
+                calendar.appendChild(dayCell);
+            }
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        function addEvent(day) {
+            const eventName = prompt("Enter event name:");
+            if (eventName) {
+                const eventList = document.getElementById('event-list');
+                const eventItem = document.createElement('div');
+                eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()}: ${eventName}`;
+                eventList.appendChild(eventItem);
+            }
         }
     </script>
 </body>
