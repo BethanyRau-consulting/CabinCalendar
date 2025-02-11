@@ -117,7 +117,7 @@
         function logout() {
             document.getElementById('login-page').style.display = 'block';
             document.getElementById('main-content').style.display = 'none';
-            document.getElementById('password-input').value = ''; // Clear password input
+            document.getElementById('password-input').value = '';
         }
         
         let currentMonth = new Date().getMonth();
@@ -143,6 +143,34 @@
                 dayCell.innerText = day;
                 dayCell.onclick = () => addEvent(day);
                 calendar.appendChild(dayCell);
+            }
+        }
+
+        function prevMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        function addEvent(day) {
+            const eventName = prompt("Enter event name:");
+            if (eventName) {
+                const eventList = document.getElementById('event-list');
+                const eventItem = document.createElement('div');
+                eventItem.innerText = `${new Date(currentYear, currentMonth, day).toLocaleDateString()}: ${eventName}`;
+                eventList.appendChild(eventItem);
             }
         }
     </script>
